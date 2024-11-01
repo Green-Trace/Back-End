@@ -6,22 +6,22 @@ services:
       - "8545:8545"
     volumes:
       - ganache-data:/data
-    command: ganache-cli -a 1000 -e 100 --db /data --mnemonic "muscle earn swing aim cheap protect voyage spare analyst little climb gas" --networkId 1719041703477
+    command: ganache-cli -a 1000 -e 1000 --db /data --mnemonic "muscle earn swing aim cheap protect voyage spare analyst little climb gas" --networkId 1719041703477
     networks:
       ganache-network:
         ipv4_address: "172.20.0.2"
 
   # Uncomment below to enable the truffle service
-   truffle:
-     image: node:16
-     working_dir: /app
-     volumes:
-       - .:/app
-     depends_on:
-       - ganache-cli
-     networks:
-       - ganache-network
-     entrypoint: /bin/sh -c "npm install -g truffle && truffle compile && truffle migrate --network development"
+  truffle:
+    image: node:16
+    working_dir: /app
+    volumes:
+      - .:/app
+    depends_on:
+      - ganache-cli
+    networks:
+      - ganache-network
+    entrypoint: /bin/sh -c "npm install -g truffle && truffle compile && truffle migrate --network development"
 
 volumes:
   ganache-data:

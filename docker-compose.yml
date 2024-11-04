@@ -11,7 +11,7 @@ services:
       ganache-network:
         ipv4_address: "172.20.0.2"
 
-  # Uncomment below to enable the truffle service
+  # Truffle service for initial migration only
   truffle:
     image: node:16
     working_dir: /app
@@ -22,13 +22,5 @@ services:
     networks:
       - ganache-network
     entrypoint: /bin/sh -c "npm install -g truffle && truffle compile && truffle migrate --network development"
-
-volumes:
-  ganache-data:
-
-networks:
-  ganache-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
+    # Automatically remove the container after it completes
+    restart: "no"  # Ensures Truffle doesn’t restart

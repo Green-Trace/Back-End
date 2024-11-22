@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   ganache-cli:
     image: trufflesuite/ganache-cli
@@ -9,20 +11,33 @@ services:
     networks:
       ganache-network:
         ipv4_address: "172.20.0.2"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8545"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
     restart: always
 
-  # Truffle service for initial migration only
   truffle:
     image: node:16
     working_dir: /app
     volumes:
       - .:/app
     depends_on:
-      - ganache-cli
+      ganache-cli:
+        condition: service_healthy
     networks:
       - ganache-network
-    entrypoint: /bin/sh -c "npm install -g truffle && truffle compile && truffle migrate --network development"
-    restart: "no"  # Ensures Truffle doesn’t restart
+    entrypoint: >
+      /bin/sh -c "
+      until curl -s http://ganache-cli:8545 > /dev/null; do 
+        echo 'Waiting for Ganache...'; 
+        sleep 5; 
+      done && 
+      npm install -g truffle && 
+      truffle compile && 
+      truffle migrate --network development"
+    restart: "no"  # Ensures Truffle doesn’t restart unnecessarily
 
 volumes:
   ganache-data:

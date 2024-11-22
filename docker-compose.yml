@@ -9,6 +9,7 @@ services:
     networks:
       ganache-network:
         ipv4_address: "172.20.0.2"
+    restart: always
 
   # Truffle service for initial migration only
   truffle:

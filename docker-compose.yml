@@ -11,11 +11,6 @@ services:
     networks:
       ganache-network:
         ipv4_address: "172.20.0.2"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8545"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
     restart: always
 
   truffle:
